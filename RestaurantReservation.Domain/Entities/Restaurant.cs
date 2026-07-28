@@ -10,9 +10,9 @@ public sealed class Restaurant
         Employees = new HashSet<Employee>();
     }
     
-    public required int RestaurantId { get; set; }
-    public required string Name { get; set; }
-    public required string Address { get; set; }
+    public int RestaurantId { get; set; }
+    public string Name { get; set; }
+    public string Address { get; set; }
     public string PhoneNumber { get; set; }
     public string OpeningHours  { get; set; }
     
