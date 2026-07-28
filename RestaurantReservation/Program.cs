@@ -1,4 +1,6 @@
 ﻿using RestaurantReservation.Infrastructure.Db;
+using RestaurantReservation.Infrastructure.IRepositories;
+using RestaurantReservation.Infrastructure.Repositories;
 using RestaurantReservation.Infrastructure.Seeders;
 
 namespace RestaurantReservation;
@@ -10,6 +12,5 @@ class Program
         using var context = new RestaurantReservationDbContext();
         var runner = new SeederRunner();
         await runner.RunAsync(context);
-        Console.WriteLine("Database seeded successfully!");
     }
 }

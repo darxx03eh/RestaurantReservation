@@ -5,7 +5,7 @@ using RestaurantReservation.Infrastructure.Db;
 
 namespace RestaurantReservation.Infrastructure.Seeders.EntitieSeeders;
 
-public class CustomerSeeder : ISeeder
+public sealed class CustomerSeeder : ISeeder
 {
     public async Task SeedAsync(RestaurantReservationDbContext context)
     {

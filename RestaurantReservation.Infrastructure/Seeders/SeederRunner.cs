@@ -3,7 +3,7 @@ using RestaurantReservation.Infrastructure.Seeders.EntitieSeeders;
 
 namespace RestaurantReservation.Infrastructure.Seeders;
 
-public class SeederRunner
+public sealed class SeederRunner
 {
     private readonly List<ISeeder> _seeders;
 
