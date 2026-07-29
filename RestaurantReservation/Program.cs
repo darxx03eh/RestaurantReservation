@@ -1,11 +1,39 @@
-﻿using RestaurantReservation.Infrastructure.Db;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using RestaurantReservation.Infrastructure.Db;
+using RestaurantReservation.UI;
 
 namespace RestaurantReservation;
 
-class Program
+internal static class Program
 {
-    static async Task Main(string[] args)
+    private static async Task Main(string[] args)
     {
-        
+        try
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+            var services = new ServiceCollection();
+            services.AddDbContext<RestaurantReservationDbContext>(options =>
+            {
+                options.UseSqlServer(
+                    configuration.GetConnectionString("RestaurantReservationDbLocalConnection"));
+            });
+            services.AddTransient<RestaurantReservationConsole>();
+            var provider = services.BuildServiceProvider();
+            var console = provider.GetRequiredService<RestaurantReservationConsole>();
+            await console.RunAsync();
+        }
+        catch (Exception exception)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Error.WriteLine("Application failed to start.");
+            Console.ResetColor();
+            Console.Error.WriteLine(exception.GetBaseException().Message);
+        }
     }
 }
