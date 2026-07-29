@@ -3,6 +3,7 @@ using RestaurantReservation.Infrastructure.Db;
 using RestaurantReservation.Infrastructure.Implementations;
 using RestaurantReservation.Infrastructure.Interfaces;
 using RestaurantReservation.Infrastructure.Repositories;
+using RestaurantReservation.Infrastructure.Seeders;
 using RestaurantReservation.UI.Common;
 using RestaurantReservation.UI.Features;
 using RestaurantReservation.UI.Features.Customers;
@@ -49,7 +50,8 @@ public sealed class RestaurantReservationConsole : IAsyncDisposable
     {
         AnsiConsole.Clear();
         AnsiConsole.Write(new FigletText("Reservations").Color(Color.Teal));
-
+        var seeder = new SeederRunner();
+        await seeder.RunAsync(_context);
         while (true)
         {
             var option = AnsiConsole.Prompt(

@@ -17,6 +17,7 @@ internal sealed class EntitySelector(RestaurantReservationDbContext context, IUn
         if (customers.Count == 0)
         {
             AnsiConsole.MarkupLine("[yellow]No customers found.[/]");
+            AnsiConsole.MarkupLine("[yellow]No customers found.[/]");
             return null;
         }
 
