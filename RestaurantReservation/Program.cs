@@ -1,14 +1,13 @@
-﻿using RestaurantReservation.Infrastructure.Db;
-using RestaurantReservation.Infrastructure.Seeders;
+using RestaurantReservation.UI;
 
 namespace RestaurantReservation;
 
-class Program
+internal static class Program
 {
-    static async Task Main(string[] args)
+    private static async Task Main(string[] args)
     {
-        using var context = new RestaurantReservationDbContext();
-        var runner = new SeederRunner();
-        await runner.RunAsync(context);
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+        await using var console = new RestaurantReservationConsole();
+        await console.RunAsync();
     }
 }

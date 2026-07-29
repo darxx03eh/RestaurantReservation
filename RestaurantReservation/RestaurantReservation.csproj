@@ -10,6 +10,13 @@
     <ItemGroup>
       <ProjectReference Include="..\RestaurantReservation.Domain\RestaurantReservation.Domain.csproj" />
       <ProjectReference Include="..\RestaurantReservation.Infrastructure\RestaurantReservation.Infrastructure.csproj" />
+      <ProjectReference Include="..\RestaurantReservation.UI\RestaurantReservation.UI.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
