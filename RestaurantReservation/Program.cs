@@ -1,6 +1,4 @@
 ﻿using RestaurantReservation.Infrastructure.Db;
-using RestaurantReservation.Infrastructure.IRepositories;
-using RestaurantReservation.Infrastructure.Repositories;
 using RestaurantReservation.Infrastructure.Seeders;
 
 namespace RestaurantReservation;
