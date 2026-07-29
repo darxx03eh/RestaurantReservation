@@ -5,5 +5,5 @@ namespace RestaurantReservation.Infrastructure.IRepositories;
 
 public interface IEmployeeRepository : IGenericRepository<Employee>
 {
-    
+    Task<IEnumerable<Employee>> ListManagersAsync();
 }
