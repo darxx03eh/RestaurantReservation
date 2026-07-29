@@ -17,8 +17,8 @@ public class EmployeeRepository(RestaurantReservationDbContext context)
             .Where(e => e.Position == Position.Manager)
             .ToListAsync();
         
-        if (!managers.Any())
-            return Enumerable.Empty<Employee>();
-        return managers;
+        return !managers.Any()
+            ? Enumerable.Empty<Employee>()
+            : managers;
     }
 }
