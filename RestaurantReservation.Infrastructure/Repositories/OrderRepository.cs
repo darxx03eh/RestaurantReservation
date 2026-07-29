@@ -22,4 +22,13 @@ public class OrderRepository(RestaurantReservationDbContext context)
             ? Enumerable.Empty<Order>()
             : orders;
     }
+
+    public async Task<decimal> CalculateAverageOrderAmountAsync(int employeeId)
+    {
+        var average = await _context.Orders.AsNoTracking()
+            .Where(o => o.EmployeeId.Equals(employeeId))
+            .AverageAsync(o => o.TotalAmount);
+
+        return average;
+    }
 }
