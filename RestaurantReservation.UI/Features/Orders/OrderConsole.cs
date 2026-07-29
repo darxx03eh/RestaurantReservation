@@ -15,7 +15,10 @@ internal sealed class OrderConsole(
     public async Task ListWithMenuItemsAsync()
     {
         var reservationId = AnsiConsole.Ask<int>("Reservation id:");
-        var orders = await unitOfWork.Orders.ListOrdersAndMenuItemsAsync(reservationId);
+        var orders = (await unitOfWork.Orders.ListOrdersAndMenuItemsAsync(reservationId)).ToList();
+        if (Ui.ShowEmptyIfNeeded(orders, "orders for this reservation"))
+            return;
+
         var table = Ui.CreateTable("Orders", "Order", "Date", "Total", "Items");
 
         foreach (var order in orders)

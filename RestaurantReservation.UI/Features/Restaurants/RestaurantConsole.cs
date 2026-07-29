@@ -12,6 +12,9 @@ internal sealed class RestaurantConsole(RestaurantReservationDbContext context, 
     public async Task ListAsync()
     {
         var restaurants = await unitOfWork.Restaurants.GetAllAsync();
+        if (Ui.ShowEmptyIfNeeded(restaurants, "restaurants"))
+            return;
+
         var table = Ui.CreateTable("Restaurants", "Id", "Name", "Address", "Phone", "Hours");
 
         foreach (var restaurant in restaurants.OrderBy(restaurant => restaurant.RestaurantId))
@@ -39,6 +42,9 @@ internal sealed class RestaurantConsole(RestaurantReservationDbContext context, 
             })
             .OrderBy(row => row.RestaurantId)
             .ToListAsync();
+
+        if (Ui.ShowEmptyIfNeeded(rows, "restaurants"))
+            return;
 
         var table = Ui.CreateTable("Revenue Function", "Restaurant", "Revenue");
         foreach (var row in rows)

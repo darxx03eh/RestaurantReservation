@@ -10,6 +10,9 @@ internal sealed class TableConsole(IUnitOfWork unitOfWork, EntitySelector select
     public async Task ListAsync()
     {
         var tables = await unitOfWork.Tables.GetAllAsync();
+        if (Ui.ShowEmptyIfNeeded(tables, "tables"))
+            return;
+
         var table = Ui.CreateTable("Tables", "Id", "Restaurant", "Capacity");
 
         foreach (var restaurantTable in tables.OrderBy(item => item.TableId))

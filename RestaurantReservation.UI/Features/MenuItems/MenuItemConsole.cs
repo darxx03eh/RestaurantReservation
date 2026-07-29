@@ -10,6 +10,9 @@ internal sealed class MenuItemConsole(IUnitOfWork unitOfWork, EntitySelector sel
     public async Task ListAsync()
     {
         var menuItems = await unitOfWork.MenuItems.GetAllAsync();
+        if (Ui.ShowEmptyIfNeeded(menuItems, "menu items"))
+            return;
+
         var table = Ui.CreateTable("Menu Items", "Id", "Restaurant", "Name", "Price", "Description");
 
         foreach (var item in menuItems.OrderBy(item => item.ItemId))

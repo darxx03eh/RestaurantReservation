@@ -19,6 +19,9 @@ internal sealed class ReservationConsole(RestaurantReservationDbContext context,
             .OrderBy(reservation => reservation.ReservationDate)
             .ToListAsync();
 
+        if (Ui.ShowEmptyIfNeeded(reservations, "reservations"))
+            return;
+
         var table = Ui.CreateTable("Reservations", "Id", "Date", "Customer", "Restaurant", "Table", "Party");
         foreach (var reservation in reservations)
         {
@@ -40,6 +43,9 @@ internal sealed class ReservationConsole(RestaurantReservationDbContext context,
             .AsNoTracking()
             .OrderBy(row => row.ReservationDate)
             .ToListAsync();
+
+        if (Ui.ShowEmptyIfNeeded(rows, "reservation details"))
+            return;
 
         var table = Ui.CreateTable("Reservation Details View", "Id", "Date", "Customer", "Phone", "Restaurant", "Party");
         foreach (var row in rows)

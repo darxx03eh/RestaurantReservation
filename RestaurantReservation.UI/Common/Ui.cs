@@ -73,6 +73,22 @@ internal static class Ui
 
     public static string FormatMoney(decimal value) => value.ToString("C");
 
+    public static bool ShowEmptyIfNeeded<T>(ICollection<T> rows, string name)
+    {
+        if (rows.Count > 0)
+            return false;
+
+        AnsiConsole.MarkupLine($"[yellow]No {name} found.[/]");
+        return true;
+    }
+
+    public static void WriteError(Exception exception)
+    {
+        var message = Markup.Escape(exception.GetBaseException().Message);
+        AnsiConsole.MarkupLine("[red]Action failed.[/]");
+        AnsiConsole.MarkupLine($"[grey]{message}[/]");
+    }
+
     public static void Pause()
     {
         AnsiConsole.MarkupLine("[grey]Press any key to continue.[/]");

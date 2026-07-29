@@ -16,6 +16,9 @@ internal sealed class CustomerConsole(
     public async Task ListAsync()
     {
         var customers = await unitOfWork.Customers.GetAllAsync();
+        if (Ui.ShowEmptyIfNeeded(customers, "customers"))
+            return;
+
         var table = Ui.CreateTable("Customers", "Id", "Name", "Email", "Phone");
 
         foreach (var customer in customers.OrderBy(customer => customer.CustomerId))
@@ -34,6 +37,9 @@ internal sealed class CustomerConsole(
             .FromSqlInterpolated($"EXEC dbo.sp_GetCustomersByPartySize {partySize}")
             .AsNoTracking()
             .ToListAsync();
+
+        if (Ui.ShowEmptyIfNeeded(rows, "customers matching this party size"))
+            return;
 
         var table = Ui.CreateTable("Stored Procedure Result", "Id", "Name", "Email", "Phone");
         foreach (var row in rows)
