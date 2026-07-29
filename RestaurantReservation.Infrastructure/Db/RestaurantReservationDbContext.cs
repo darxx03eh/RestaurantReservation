@@ -5,7 +5,7 @@ using RestaurantReservation.Domain.Entities;
 
 namespace RestaurantReservation.Infrastructure.Db;
 
-public class RestaurantReservationDbContext : DbContext
+public partial class RestaurantReservationDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
     public RestaurantReservationDbContext() => _configuration = LoadConfigurations();
@@ -14,8 +14,10 @@ public class RestaurantReservationDbContext : DbContext
         => optionsBuilder.UseSqlServer(_configuration.GetConnectionString("RestaurantReservationDbLocalConnection"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-        => modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        ConfigureGetRestaurantTotalRevenueFunctions(modelBuilder);
+    }
     private IConfiguration LoadConfigurations()
         => new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
