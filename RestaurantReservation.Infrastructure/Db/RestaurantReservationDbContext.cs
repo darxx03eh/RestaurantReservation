@@ -7,22 +7,14 @@ namespace RestaurantReservation.Infrastructure.Db;
 
 public partial class RestaurantReservationDbContext : DbContext
 {
-    private readonly IConfiguration _configuration;
-    public RestaurantReservationDbContext() => _configuration = LoadConfigurations();
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(_configuration.GetConnectionString("RestaurantReservationDbLocalConnection"));
+    public RestaurantReservationDbContext(DbContextOptions<RestaurantReservationDbContext> options)
+        : base(options){}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         ConfigureGetRestaurantTotalRevenueFunctions(modelBuilder);
     }
-    private IConfiguration LoadConfigurations()
-        => new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .Build();
     
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
