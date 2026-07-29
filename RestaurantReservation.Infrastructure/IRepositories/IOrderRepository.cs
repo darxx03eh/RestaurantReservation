@@ -6,4 +6,5 @@ namespace RestaurantReservation.Infrastructure.IRepositories;
 public interface IOrderRepository : IGenericRepository<Order>
 {
     Task<IEnumerable<Order>> ListOrdersAndMenuItemsAsync(int reservationId);
+    Task<decimal> CalculateAverageOrderAmountAsync(int employeeId);
 }
