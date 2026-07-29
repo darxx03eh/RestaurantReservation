@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using RestaurantReservation.Infrastructure.Db;
 using RestaurantReservation.Infrastructure.Implementations;
 using RestaurantReservation.Infrastructure.Interfaces;
@@ -28,9 +29,9 @@ public sealed class RestaurantReservationConsole : IAsyncDisposable
     private readonly ReservationConsole _reservationConsole;
     private readonly OrderConsole _orderConsole;
 
-    public RestaurantReservationConsole()
+    public RestaurantReservationConsole(RestaurantReservationDbContext context)
     {
-        _context = new RestaurantReservationDbContext();
+        _context = context;
         _unitOfWork = CreateUnitOfWork(_context);
 
         var selector = new EntitySelector(_context, _unitOfWork);

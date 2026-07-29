@@ -393,6 +393,5 @@ _Pvt_Extensions
 *.metaproj
 *.metaproj.tmp
 
-# Data fiels
-Data/
-*.json
+# appsettings.json file
+appsettings.json
