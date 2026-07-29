@@ -53,113 +53,198 @@ public sealed class RestaurantReservationConsole : IAsyncDisposable
         {
             var option = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
-                    .Title("[bold]Choose an action[/]")
-                    .PageSize(16)
-                    .MoreChoicesText("[grey]Move up and down to see more actions[/]")
+                    .Title("[bold]Choose a menu[/]")
+                    .PageSize(10)
                     .AddChoices(
                         "Show dashboard",
-                        "List restaurants",
-                        "List customers",
-                        "List tables",
-                        "List employees",
-                        "List menu items",
-                        "List reservations",
-                        "List orders with menu items",
-                        "Show reservation details view",
-                        "Show employee restaurant details view",
-                        "Show revenue by restaurant function",
-                        "Run customers by party size procedure",
-                        "Create customer",
-                        "Create restaurant",
-                        "Create table",
-                        "Create menu item",
-                        "Create reservation",
-                        "Create order",
-                        "Update customer",
-                        "Delete customer",
+                        "Customers",
+                        "Restaurants",
+                        "Tables",
+                        "Employees",
+                        "Menu items",
+                        "Reservations",
+                        "Orders",
                         "Exit"));
 
             if (option == "Exit")
                 break;
 
-            await RunActionAsync(option);
+            await RunMenuAsync(option);
         }
     }
 
-    private async Task RunActionAsync(string option)
+    private async Task RunMenuAsync(string option)
+    {
+        switch (option)
+        {
+            case "Show dashboard":
+                await RunActionAsync(_dashboardConsole.ShowAsync);
+                break;
+            case "Customers":
+                await RunCustomersMenuAsync();
+                break;
+            case "Restaurants":
+                await RunRestaurantsMenuAsync();
+                break;
+            case "Tables":
+                await RunTablesMenuAsync();
+                break;
+            case "Employees":
+                await RunEmployeesMenuAsync();
+                break;
+            case "Menu items":
+                await RunMenuItemsMenuAsync();
+                break;
+            case "Reservations":
+                await RunReservationsMenuAsync();
+                break;
+            case "Orders":
+                await RunOrdersMenuAsync();
+                break;
+        }
+    }
+
+    private async Task RunCustomersMenuAsync()
+    {
+        while (true)
+        {
+            var option = PromptSubMenu("Customers", "List customers", "Create customer", "Update customer", "Delete customer", "Customers by party size", "Back");
+            if (option == "Back")
+                return;
+
+            await RunActionAsync(option switch
+            {
+                "List customers" => _customerConsole.ListAsync,
+                "Create customer" => _customerConsole.CreateAsync,
+                "Update customer" => _customerConsole.UpdateAsync,
+                "Delete customer" => _customerConsole.DeleteAsync,
+                "Customers by party size" => _customerConsole.ShowByPartySizeAsync,
+                _ => throw new InvalidOperationException("Unknown customer action.")
+            });
+        }
+    }
+
+    private async Task RunRestaurantsMenuAsync()
+    {
+        while (true)
+        {
+            var option = PromptSubMenu("Restaurants", "List restaurants", "Create restaurant", "Show revenue", "Back");
+            if (option == "Back")
+                return;
+
+            await RunActionAsync(option switch
+            {
+                "List restaurants" => _restaurantConsole.ListAsync,
+                "Create restaurant" => _restaurantConsole.CreateAsync,
+                "Show revenue" => _restaurantConsole.ShowRevenueAsync,
+                _ => throw new InvalidOperationException("Unknown restaurant action.")
+            });
+        }
+    }
+
+    private async Task RunTablesMenuAsync()
+    {
+        while (true)
+        {
+            var option = PromptSubMenu("Tables", "List tables", "Create table", "Back");
+            if (option == "Back")
+                return;
+
+            await RunActionAsync(option switch
+            {
+                "List tables" => _tableConsole.ListAsync,
+                "Create table" => _tableConsole.CreateAsync,
+                _ => throw new InvalidOperationException("Unknown table action.")
+            });
+        }
+    }
+
+    private async Task RunEmployeesMenuAsync()
+    {
+        while (true)
+        {
+            var option = PromptSubMenu("Employees", "List employees", "Employee restaurant details", "Back");
+            if (option == "Back")
+                return;
+
+            await RunActionAsync(option switch
+            {
+                "List employees" => _employeeConsole.ListAsync,
+                "Employee restaurant details" => _employeeConsole.ShowRestaurantDetailsViewAsync,
+                _ => throw new InvalidOperationException("Unknown employee action.")
+            });
+        }
+    }
+
+    private async Task RunMenuItemsMenuAsync()
+    {
+        while (true)
+        {
+            var option = PromptSubMenu("Menu items", "List menu items", "Create menu item", "Back");
+            if (option == "Back")
+                return;
+
+            await RunActionAsync(option switch
+            {
+                "List menu items" => _menuItemConsole.ListAsync,
+                "Create menu item" => _menuItemConsole.CreateAsync,
+                _ => throw new InvalidOperationException("Unknown menu item action.")
+            });
+        }
+    }
+
+    private async Task RunReservationsMenuAsync()
+    {
+        while (true)
+        {
+            var option = PromptSubMenu("Reservations", "List reservations", "Create reservation", "Reservation details", "Back");
+            if (option == "Back")
+                return;
+
+            await RunActionAsync(option switch
+            {
+                "List reservations" => _reservationConsole.ListAsync,
+                "Create reservation" => _reservationConsole.CreateAsync,
+                "Reservation details" => _reservationConsole.ShowDetailsViewAsync,
+                _ => throw new InvalidOperationException("Unknown reservation action.")
+            });
+        }
+    }
+
+    private async Task RunOrdersMenuAsync()
+    {
+        while (true)
+        {
+            var option = PromptSubMenu("Orders", "List orders with menu items", "Create order", "Back");
+            if (option == "Back")
+                return;
+
+            await RunActionAsync(option switch
+            {
+                "List orders with menu items" => _orderConsole.ListWithMenuItemsAsync,
+                "Create order" => _orderConsole.CreateAsync,
+                _ => throw new InvalidOperationException("Unknown order action.")
+            });
+        }
+    }
+
+    private static string PromptSubMenu(string title, params string[] options)
+        => AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title($"[bold]{title}[/]")
+                .PageSize(10)
+                .AddChoices(options));
+
+    private async Task RunActionAsync(Func<Task> action)
     {
         try
         {
-            switch (option)
-            {
-                case "Show dashboard":
-                    await _dashboardConsole.ShowAsync();
-                    break;
-                case "List restaurants":
-                    await _restaurantConsole.ListAsync();
-                    break;
-                case "List customers":
-                    await _customerConsole.ListAsync();
-                    break;
-                case "List tables":
-                    await _tableConsole.ListAsync();
-                    break;
-                case "List employees":
-                    await _employeeConsole.ListAsync();
-                    break;
-                case "List menu items":
-                    await _menuItemConsole.ListAsync();
-                    break;
-                case "List reservations":
-                    await _reservationConsole.ListAsync();
-                    break;
-                case "List orders with menu items":
-                    await _orderConsole.ListWithMenuItemsAsync();
-                    break;
-                case "Show reservation details view":
-                    await _reservationConsole.ShowDetailsViewAsync();
-                    break;
-                case "Show employee restaurant details view":
-                    await _employeeConsole.ShowRestaurantDetailsViewAsync();
-                    break;
-                case "Show revenue by restaurant function":
-                    await _restaurantConsole.ShowRevenueAsync();
-                    break;
-                case "Run customers by party size procedure":
-                    await _customerConsole.ShowByPartySizeAsync();
-                    break;
-                case "Create customer":
-                    await _customerConsole.CreateAsync();
-                    break;
-                case "Create restaurant":
-                    await _restaurantConsole.CreateAsync();
-                    break;
-                case "Create table":
-                    await _tableConsole.CreateAsync();
-                    break;
-                case "Create menu item":
-                    await _menuItemConsole.CreateAsync();
-                    break;
-                case "Create reservation":
-                    await _reservationConsole.CreateAsync();
-                    break;
-                case "Create order":
-                    await _orderConsole.CreateAsync();
-                    break;
-                case "Update customer":
-                    await _customerConsole.UpdateAsync();
-                    break;
-                case "Delete customer":
-                    await _customerConsole.DeleteAsync();
-                    break;
-            }
-
+            await action();
             Ui.Pause();
         }
         catch (Exception exception)
         {
-            AnsiConsole.MarkupLine("[red]Action failed.[/]");
-            AnsiConsole.WriteException(exception, ExceptionFormats.ShortenEverything);
+            Ui.WriteError(exception);
             Ui.Pause();
         }
     }
