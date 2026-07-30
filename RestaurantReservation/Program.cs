@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RestaurantReservation.Infrastructure.Db;
+using RestaurantReservation.Infrastructure.Dependencies;
 using RestaurantReservation.UI;
+using RestaurantReservation.UI.Dependencies;
 
 namespace RestaurantReservation;
 
@@ -23,7 +25,13 @@ internal static class Program
                 options.UseSqlServer(
                     configuration.GetConnectionString("RestaurantReservationDbLocalConnection"));
             });
-            services.AddTransient<RestaurantReservationConsole>();
+            services.AddDbContextFactory<RestaurantReservationDbContext>(options =>
+            {
+                options.UseSqlServer(
+                    configuration.GetConnectionString("RestaurantReservationDbLocalConnection"));
+            });
+            services.AddUiDependencies()
+                .AddInfrastructureDependencies();
             var provider = services.BuildServiceProvider();
             var console = provider.GetRequiredService<RestaurantReservationConsole>();
             await console.RunAsync();

@@ -5,7 +5,7 @@ using Spectre.Console;
 
 namespace RestaurantReservation.UI.Features.MenuItems;
 
-internal sealed class MenuItemConsole(IUnitOfWork unitOfWork, EntitySelector selector)
+public sealed class MenuItemConsole(IUnitOfWork unitOfWork, EntitySelector selector)
 {
     public async Task ListAsync()
     {

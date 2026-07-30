@@ -17,20 +17,22 @@ public class UnitOfWork : IUnitOfWork
     public IRestaurantRepository Restaurants { get; }
     public ITableRepository Tables { get; }
 
-    public UnitOfWork(RestaurantReservationDbContext context, CustomerRepository customers,
-        ReservationRepository reservations, OrderRepository orders, EmployeeRepository employees,
-        MenuItemRepository menuItems, OrderItemRepository orderItems, RestaurantRepository restaurants,
-        TableRepository tables)
+    public UnitOfWork(RestaurantReservationDbContext context, ICustomerRepository customerRepository,
+        IReservationRepository reservationRepository, IOrderRepository orderRepository, 
+        IEmployeeRepository employeeRepository, IMenuItemRepository menuItemRepository, 
+        IOrderItemRepository orderItemRepository, IRestaurantRepository restaurantRepository,
+        ITableRepository tableRepository)
     {
         _context = context;
-        Customers = customers;
-        Reservations = reservations;
-        Orders = orders;
-        Employees = employees;
-        MenuItems = menuItems;
-        OrderItems = orderItems;
-        Restaurants = restaurants;
-        Tables = tables;
+        Customers = customerRepository;
+        Reservations = reservationRepository;
+        Orders = orderRepository;
+        Employees = employeeRepository;
+        MenuItems = menuItemRepository;
+        OrderItems = orderItemRepository;
+        Restaurants = restaurantRepository;
+        Tables = tableRepository;
+        
     }
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     => await _context.SaveChangesAsync(cancellationToken);

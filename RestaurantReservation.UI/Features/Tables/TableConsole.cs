@@ -5,7 +5,7 @@ using RestaurantTable = RestaurantReservation.Domain.Entities.Table;
 
 namespace RestaurantReservation.UI.Features.Tables;
 
-internal sealed class TableConsole(IUnitOfWork unitOfWork, EntitySelector selector)
+public sealed class TableConsole(IUnitOfWork unitOfWork, EntitySelector selector)
 {
     public async Task ListAsync()
     {
