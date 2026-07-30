@@ -8,14 +8,7 @@ public class RestaurantReservationDbContextFactory : IDesignTimeDbContextFactory
 {
     public RestaurantReservationDbContext CreateDbContext(string[] args)
     {
-        var configuration = new ConfigurationBuilder()
-            .SetBasePath(
-                Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "../RestaurantReservation"))
-            .AddJsonFile("appsettings.json")
-            .AddEnvironmentVariables()
-            .Build();
+        var configuration = LoadConfigurationsForFactory();
 
         var optionsBuilder = new DbContextOptionsBuilder<RestaurantReservationDbContext>();
 
@@ -25,4 +18,13 @@ public class RestaurantReservationDbContextFactory : IDesignTimeDbContextFactory
 
         return new RestaurantReservationDbContext(optionsBuilder.Options);
     }
+    private static IConfiguration LoadConfigurationsForFactory()
+    => new ConfigurationBuilder()
+        .SetBasePath(
+            Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "../RestaurantReservation"))
+        .AddJsonFile("appsettings.json")
+        .AddEnvironmentVariables()
+        .Build();
 }

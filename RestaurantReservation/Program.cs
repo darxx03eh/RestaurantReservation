@@ -14,24 +14,12 @@ internal static class Program
     {
         try
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables()
-                .Build();
+            var configuration = LoadConfigurations();
             var services = new ServiceCollection();
-            services.AddDbContext<RestaurantReservationDbContext>(options =>
-            {
-                options.UseSqlServer(
-                    configuration.GetConnectionString("RestaurantReservationDbLocalConnection"));
-            });
-            services.AddDbContextFactory<RestaurantReservationDbContext>(options =>
-            {
-                options.UseSqlServer(
-                    configuration.GetConnectionString("RestaurantReservationDbLocalConnection"));
-            });
-            services.AddUiDependencies()
-                .AddInfrastructureDependencies();
+            services.AddRestaurantReservationDbContext(configuration)
+                    .AddRestaurantReservationDbContextFactory(configuration)
+                    .AddInfrastructureDependencies()
+                    .AddUiDependencies();
             var provider = services.BuildServiceProvider();
             var console = provider.GetRequiredService<RestaurantReservationConsole>();
             await console.RunAsync();
@@ -44,4 +32,10 @@ internal static class Program
             Console.Error.WriteLine(exception.GetBaseException().Message);
         }
     }
+    private static IConfiguration LoadConfigurations() 
+    => new ConfigurationBuilder()
+        .SetBasePath(AppContext.BaseDirectory)
+        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+        .AddEnvironmentVariables()
+        .Build();
 }
