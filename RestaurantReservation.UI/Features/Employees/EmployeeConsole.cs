@@ -7,7 +7,7 @@ using Spectre.Console;
 
 namespace RestaurantReservation.UI.Features.Employees;
 
-internal sealed class EmployeeConsole(RestaurantReservationDbContext context, IUnitOfWork unitOfWork)
+public sealed class EmployeeConsole(RestaurantReservationDbContext context, IUnitOfWork unitOfWork)
 {
     public async Task ListAsync()
     {

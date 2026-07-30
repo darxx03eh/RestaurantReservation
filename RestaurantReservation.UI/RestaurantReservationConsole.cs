@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using RestaurantReservation.Infrastructure.Db;
 using RestaurantReservation.Infrastructure.Implementations;
@@ -21,6 +22,7 @@ public sealed class RestaurantReservationConsole : IAsyncDisposable
 {
     private readonly RestaurantReservationDbContext _context;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly SeederRunner _seederRunner;
     private readonly DashboardConsole _dashboardConsole;
     private readonly CustomerConsole _customerConsole;
     private readonly RestaurantConsole _restaurantConsole;
@@ -30,28 +32,44 @@ public sealed class RestaurantReservationConsole : IAsyncDisposable
     private readonly ReservationConsole _reservationConsole;
     private readonly OrderConsole _orderConsole;
 
-    public RestaurantReservationConsole(RestaurantReservationDbContext context)
+    public RestaurantReservationConsole(RestaurantReservationDbContext context, DashboardConsole dashboardConsole,
+        CustomerConsole customerConsole, RestaurantConsole restaurantConsole, TableConsole tableConsole,
+        EmployeeConsole employeeConsole, MenuItemConsole menuItemConsole, ReservationConsole reservationConsole,
+        OrderConsole orderConsole, IUnitOfWork unitOfWork, SeederRunner seederRunner )
     {
         _context = context;
-        _unitOfWork = CreateUnitOfWork(_context);
+        _unitOfWork = unitOfWork;
+        _seederRunner = seederRunner;
 
-        var selector = new EntitySelector(_context, _unitOfWork);
-        _dashboardConsole = new DashboardConsole(_context, _unitOfWork);
-        _customerConsole = new CustomerConsole(_context, _unitOfWork, selector);
-        _restaurantConsole = new RestaurantConsole(_context, _unitOfWork);
-        _tableConsole = new TableConsole(_unitOfWork, selector);
-        _employeeConsole = new EmployeeConsole(_context, _unitOfWork);
-        _menuItemConsole = new MenuItemConsole(_unitOfWork, selector);
-        _reservationConsole = new ReservationConsole(_context, selector);
-        _orderConsole = new OrderConsole(_context, _unitOfWork, selector);
+        _dashboardConsole = dashboardConsole;
+        _customerConsole = customerConsole;
+        _restaurantConsole = restaurantConsole;
+        _tableConsole = tableConsole;
+        _employeeConsole = employeeConsole;
+        _menuItemConsole = menuItemConsole;
+        _reservationConsole = reservationConsole;
+        _orderConsole = orderConsole;
     }
 
     public async Task RunAsync()
     {
         AnsiConsole.Clear();
         AnsiConsole.Write(new FigletText("Reservations").Color(Color.Teal));
-        var seeder = new SeederRunner();
-        await seeder.RunAsync(_context);
+
+        var shouldSeed = AnsiConsole.Confirm("Do you want to seed the database?", true);
+        if (shouldSeed)
+        {
+            var alreadySeeded = await _seederRunner.IsAlreadySeededAsync();
+            if(alreadySeeded)
+                AnsiConsole.MarkupLine("[yellow]The database has already been seeded.[/]");
+            else
+            {
+                AnsiConsole.MarkupLine("[cyan]Seeding database, please wait...[/]");
+                await _seederRunner.RunAsync(_context);
+                AnsiConsole.MarkupLine("[green]Database seeding completed successfully.[/]");
+            }
+        }
+        AnsiConsole.MarkupLine("[green]Application is ready.[/]");
         while (true)
         {
             var option = AnsiConsole.Prompt(
@@ -251,18 +269,6 @@ public sealed class RestaurantReservationConsole : IAsyncDisposable
             Ui.Pause();
         }
     }
-
-    private static IUnitOfWork CreateUnitOfWork(RestaurantReservationDbContext context)
-        => new UnitOfWork(
-            context,
-            new CustomerRepository(context),
-            new ReservationRepository(context),
-            new OrderRepository(context),
-            new EmployeeRepository(context),
-            new MenuItemRepository(context),
-            new OrderItemRepository(context),
-            new RestaurantRepository(context),
-            new TableRepository(context));
-
+    
     public async ValueTask DisposeAsync() => await _context.DisposeAsync();
 }

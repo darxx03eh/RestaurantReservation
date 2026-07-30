@@ -7,6 +7,7 @@ namespace RestaurantReservation.Infrastructure.Seeders.EntitieSeeders;
 
 public sealed class MenuItemSeeder : ISeeder
 {
+    public int Order => 4;
     public async Task SeedAsync(RestaurantReservationDbContext context)
     {
         var numberOfItems = await context.MenuItems.CountAsync();

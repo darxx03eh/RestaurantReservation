@@ -8,7 +8,7 @@ using Spectre.Console;
 
 namespace RestaurantReservation.UI.Features.Customers;
 
-internal sealed class CustomerConsole(
+public sealed class CustomerConsole(
     RestaurantReservationDbContext context,
     IUnitOfWork unitOfWork,
     EntitySelector selector)
