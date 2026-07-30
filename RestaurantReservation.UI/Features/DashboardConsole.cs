@@ -5,7 +5,7 @@ using Spectre.Console;
 
 namespace RestaurantReservation.UI.Features;
 
-internal sealed class DashboardConsole(RestaurantReservationDbContext context, IUnitOfWork unitOfWork)
+public sealed class DashboardConsole(RestaurantReservationDbContext context, IUnitOfWork unitOfWork)
 {
     public async Task ShowAsync()
     {
