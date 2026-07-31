@@ -124,7 +124,7 @@ RestaurantReservation/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/RestaurantReservation.git
+git clone https://github.com/darxx03eh/RestaurantReservation.git
 cd RestaurantReservation
 ```
 
