@@ -5,7 +5,7 @@ using RestaurantReservation.Infrastructure.Repositories;
 
 namespace RestaurantReservation.Infrastructure.Implementations;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork : IUnitOfWork, IAsyncDisposable
 {
     private readonly RestaurantReservationDbContext _context;
     public ICustomerRepository Customers { get; }
@@ -32,8 +32,10 @@ public class UnitOfWork : IUnitOfWork
         OrderItems = orderItemRepository;
         Restaurants = restaurantRepository;
         Tables = tableRepository;
-        
     }
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     => await _context.SaveChangesAsync(cancellationToken);
+
+    public void Dispose() => _context.Dispose();
+    public async ValueTask DisposeAsync() => await _context.DisposeAsync();
 }
