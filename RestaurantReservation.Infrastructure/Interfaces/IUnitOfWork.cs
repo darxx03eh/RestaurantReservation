@@ -2,7 +2,7 @@
 
 namespace RestaurantReservation.Infrastructure.Interfaces;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IDisposable
 {
     ICustomerRepository Customers { get; }
     IReservationRepository Reservations { get; }
